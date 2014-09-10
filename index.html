@@ -6,7 +6,7 @@
 		<script src="brainfuckRenderer.js"></script>
 		<script src="brainfuckMachine.js"></script>
 		<script>
-			var brainfuck = new BrainfuckMachine("++++++++++++++++++++++++++++++++++++++++");
+			var brainfuck = new BrainfuckMachine("++++[->++++>+[->++<]<<]>.");
 			document.body.appendChild(brainfuck.renderer.element);
 			brainfuck.renderer.last = 0;
 		</script>
