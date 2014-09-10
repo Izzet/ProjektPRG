@@ -65,9 +65,11 @@ function BrainfuckMachine (code, renderer){
 };
 BrainfuckMachine.prototype.step = function (){
 	if(this.code[this.cursor]){
-		this.order[this.code[this.cursor]]();
+		if(this.order[this.code[this.cursor]]){
+			this.order[this.code[this.cursor]]();
+			this.steps++;
+		}
 		this.cursor++;
-		this.steps++;
 	}
 	this.renderer.last = this.memory[this.index];
 };
