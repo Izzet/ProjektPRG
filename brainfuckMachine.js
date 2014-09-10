@@ -8,7 +8,7 @@ function BrainfuckMachine (code, renderer){
 	this.parNum = 0;
 	
 	this.steps = 0;
-	this.maxSteps = 1000;
+	this.maxSteps = 100000;
 	
 	this.renderer = new BrainfuckRenderer();
 	
@@ -83,4 +83,12 @@ BrainfuckMachine.prototype.faire = function(code){
 	this.code = code;
 	this.cursor = 0;
 	this.doAll();
+};
+BrainfuckMachine.prototype.doAllSlow = function (s){
+	this.steps = s === undefined ? 0 : s;
+	var _this = this;
+	if(this.cursor < this.code.length && this.steps < this.maxSteps){
+		this.step();
+		setTimeout(function (){_this.doAllSlow(_this.steps);}, 10);
+	};
 };
