@@ -6,7 +6,7 @@
 		<script src="brainfuckRenderer.js"></script>
 		<script src="brainfuckMachine.js"></script>
 		<script>
-			var brainfuck = new BrainfuckMachine("+++++ +++ [-> +++++ ++++ <]>.H>+++[->+++++ +++++ +++++ +++++ +++<]>.E>++++[->+++++ +++++ +++++ ++++<]>.L.L>+++++++[->+++++++++++<]>++.O>");
+			var brainfuck = new BrainfuckMachine("");
 			var bEl = brainfuck.renderer.element;
 			bEl.align = "center";
 			document.body.appendChild(bEl);
@@ -14,11 +14,15 @@
 		</script>
 		
 		<input type="file" id="inputScript"></input>
-		<button id="run">RUN</input>
+		<button id="run">RUN</button>
+		<button id="runSlow">RUN SLOW</button>
+		<button id="letters">Toggle to letters</button>
 		<script>
 			var el = document.getElementById("inputScript");
 			var reader = new FileReader();
 			var runner = document.getElementById("run");
+			var runnerSlow = document.getElementById("runSlow");
+			var letters = document.getElementById("letters");
 			function loaded(string){
 				console.log(string);
 			};
@@ -31,6 +35,13 @@
 			runner.onclick = function (){
 				brainfuck.code = reader.result;
 				brainfuck.doAll();
+			};
+			runnerSlow.onclick = function (){
+				brainfuck.code = reader.result;
+				brainfuck.doAllSlow();
+			};
+			letters.onclick = function (){
+				brainfuck.renderer.letters = !brainfuck.renderer.letters;
 			};
 		</script>
 	</body>
