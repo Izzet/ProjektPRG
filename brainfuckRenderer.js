@@ -1,7 +1,7 @@
 function BrainfuckRenderer(el){
 	this.element = el === undefined ? document.createElement("p") : el;
 	
-	this.prefix = "<span style='background-color: red'>";
+	this.prefix = "<span style='background-color: #CC333F'>";
 	this.postfix = "</span>";
 	
 	this.lastValue = "";
