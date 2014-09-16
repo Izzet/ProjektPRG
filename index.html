@@ -7,8 +7,31 @@
 		<script src="brainfuckMachine.js"></script>
 		<script>
 			var brainfuck = new BrainfuckMachine("+++++ +++ [-> +++++ ++++ <]>.H>+++[->+++++ +++++ +++++ +++++ +++<]>.E>++++[->+++++ +++++ +++++ ++++<]>.L.L>+++++++[->+++++++++++<]>++.O>");
-			document.body.appendChild(brainfuck.renderer.element);
+			var bEl = brainfuck.renderer.element;
+			bEl.align = "center";
+			document.body.appendChild(bEl);
 			brainfuck.renderer.last = 0;
+		</script>
+		
+		<input type="file" id="inputScript"></input>
+		<button id="run">RUN</input>
+		<script>
+			var el = document.getElementById("inputScript");
+			var reader = new FileReader();
+			var runner = document.getElementById("run");
+			function loaded(string){
+				console.log(string);
+			};
+			reader.onload = function(){
+				loaded(reader.result);
+			};
+			el.onchange = function (){
+				reader.readAsText(el.files[0]);
+			};
+			runner.onclick = function (){
+				brainfuck.code = reader.result;
+				brainfuck.doAll();
+			};
 		</script>
 	</body>
 </html>
