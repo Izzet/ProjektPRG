@@ -1,4 +1,4 @@
-function BrainfuckMachine (code, renderer){
+function BrainfuckMachine (code, input){
 	this.memory = [0];
 	this.index = 0;
 	
@@ -10,7 +10,10 @@ function BrainfuckMachine (code, renderer){
 	this.steps = 0;
 	this.maxSteps = 100000;
 	
+	this.waitingForInput = false;
+	
 	this.renderer = new BrainfuckRenderer();
+	this.inputElement = input;
 	
 	var _this = this;
 	this.order = {
@@ -60,10 +63,16 @@ function BrainfuckMachine (code, renderer){
 			_this.cursor = _this.parStack[_this.parStack.length-1]-1;
 			_this.parStack.splice(_this.parStack.length-1,1);
 		},
+		"," : function (){
+			_this.waitingForInput = true;
+			_this.inputElement.disabled = false;
+		},
 	};
 	
 };
 BrainfuckMachine.prototype.step = function (){
+	if(this.waitingForInput)
+		return;
 	if(this.code[this.cursor]){
 		if(this.order[this.code[this.cursor]]){
 			this.order[this.code[this.cursor]]();
@@ -91,4 +100,8 @@ BrainfuckMachine.prototype.doAllSlow = function (s){
 		this.step();
 		setTimeout(function (){_this.doAllSlow(_this.steps);}, 10);
 	};
+};
+BrainfuckMachine.prototype.input = function ( input ){
+	this.memory[this.index] = input;
+	this.waitingForInput = false;
 };
