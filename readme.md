@@ -9,7 +9,7 @@ Core Brainfuck interpreter
 
 Čtení souborů brainfuck (*.bf)
 	- javascriptové čtení na stránce
-	- psaní a export brainfuckových skriptů ??
+	- psaní a export brainfuckových skriptů
 
 Output skriptu
 	- písmena X čísla X barvy
