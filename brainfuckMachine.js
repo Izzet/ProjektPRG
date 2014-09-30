@@ -11,6 +11,7 @@ function BrainfuckMachine (code, input){
 	this.maxSteps = 100000;
 	
 	this.waitingForInput = false;
+	this.doingAll = false;
 	
 	this.renderer = new BrainfuckRenderer();
 	this.inputElement = input;
@@ -83,8 +84,9 @@ BrainfuckMachine.prototype.step = function (){
 	this.renderer.last = this.memory[this.index];
 };
 BrainfuckMachine.prototype.doAll = function (){
+	this.doingAll = true;
 	this.steps = 0;
-	while(this.cursor < this.code.length && this.steps < this.maxSteps){
+	while(this.cursor < this.code.length && this.steps < this.maxSteps && !this.waitingForInput){
 		this.step();
 	};
 };
@@ -103,5 +105,9 @@ BrainfuckMachine.prototype.doAllSlow = function (s){
 };
 BrainfuckMachine.prototype.input = function ( input ){
 	this.memory[this.index] = input;
+	this.inputElement.disabled = true;
+	this.inputElement.value = "";
 	this.waitingForInput = false;
+	if(this.doingAll)
+		this.doAll();
 };
