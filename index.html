@@ -5,12 +5,16 @@
 	<body>
 		<script src="code/brainfuckRenderer.js"></script>
 		<script src="code/brainfuckMachine.js"></script>
+		<script src="code/utils.js"></script>
 		
-		<input type="file" id="inputScript"></input>
+		<div id="codeDiv">
+		<input type="file" id="inputFile"></input>
+		<button id="insert">INSERT</button>
 		<button id="run">RUN</button>
 		<button id="runSlow">RUN SLOW</button>
 		<button id="letters">Toggle to letters</button>
-		<br>
+		<textarea id="code"></textarea>
+		</div>
 		<div id="inputDiv"><textarea id="userInput" ></textarea><button id="input">Input to Brainfuck</button></div>
 		<div id="outputDiv"></div>
 		<script>
@@ -23,7 +27,8 @@
 			brainfuck.renderer.last = 0;
 		</script>
 		<script>
-			var el = document.getElementById("inputScript");
+			var inputFile = document.getElementById("inputFile");
+			var insert = document.getElementById("insert");
 			var inElSend = document.getElementById("input");
 			var reader = new FileReader();
 			var runner = document.getElementById("run");
@@ -34,9 +39,10 @@
 			};
 			reader.onload = function(){
 				loaded(reader.result);
+				insert.value = reader.result;
 			};
-			el.onchange = function (){
-				reader.readAsText(el.files[0]);
+			inputFile.onchange = function (){
+				reader.readAsText(inputFile.files[0]);
 			};
 			runner.onclick = function (){
 				brainfuck.code = reader.result;
