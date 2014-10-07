@@ -11,12 +11,12 @@
 		<button id="runSlow">RUN SLOW</button>
 		<button id="letters">Toggle to letters</button>
 		<br>
-		<div id="inputDiv"><input id="userInput" type="text"><button id="input">Input to Brainfuck</button></div>
+		<div id="inputDiv"><textarea id="userInput" ></textarea><button id="input">Input to Brainfuck</button></div>
 		<div id="outputDiv"></div>
 		<script>
 			var inEl = document.getElementById("userInput");
 			inEl.disabled = true;
-			var brainfuck = new BrainfuckMachine(",++.", inEl);
+			var brainfuck = new BrainfuckMachine("++", inEl);
 			var bEl = brainfuck.renderer.element;
 			bEl.align = "left";
 			document.body.appendChild(bEl);

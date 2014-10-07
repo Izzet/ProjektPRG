@@ -1,9 +1,9 @@
 #inputDiv {
 	position : absolute;
-	left: 77%;
+	left: 69%;
 	top : 1%;
-	width : 22.5%;
-	height : 15%;
+	width : 30%;
+	height : 20%;
 	background-color: grey;
 }
 #userInput {
@@ -12,12 +12,14 @@
 	left : 2.5%;
 	height : 55%;
 	width : 95%;
-	font-size : 120%;
+	font-size : 220%;
 	size : 10;
+	resize : none;
 }
 #input {
 	position : absolute;
 	top : 70%;
 	left : 25%;
 	width : 50%;
+	font-size : 100%;
 }

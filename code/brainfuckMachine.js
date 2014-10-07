@@ -2,7 +2,7 @@ function BrainfuckMachine (code, input){
 	this.memory = [0];
 	this.index = 0;
 	
-	this.code = code === undefined ? "" : code;
+	this.code = code === undefined ? ",." : code;
 	this.cursor = 0;
 	this.parStack = [];
 	this.parNum = 0;
