@@ -6,6 +6,7 @@ Core Brainfuck interpreter
 	- vizalizace output and input
 	- rozhodnutí, který z přístupů interpretace je rychlejší
 		- mapování podmínek X interpretace podmínek za pochodu
+	- možná intepreter z jiného jazyka
 
 Čtení souborů brainfuck (*.bf)
 	- javascriptové čtení na stránce

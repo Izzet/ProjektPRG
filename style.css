@@ -1,0 +1,23 @@
+#inputDiv {
+	position : absolute;
+	left: 77%;
+	top : 1%;
+	width : 22.5%;
+	height : 15%;
+	background-color: grey;
+}
+#userInput {
+	position : absolute;
+	top : 2.5%;
+	left : 2.5%;
+	height : 55%;
+	width : 95%;
+	font-size : 120%;
+	size : 10;
+}
+#input {
+	position : absolute;
+	top : 70%;
+	left : 25%;
+	width : 50%;
+}

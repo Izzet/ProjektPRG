@@ -1,23 +1,24 @@
 <html>
 	<head>
-
+		<link rel="stylesheet" href="style.css" type="text/css">
 	</head>
 	<body>
-		<script src="brainfuckRenderer.js"></script>
-		<script src="brainfuckMachine.js"></script>
-		
+		<script src="code/brainfuckRenderer.js"></script>
+		<script src="code/brainfuckMachine.js"></script>
 		
 		<input type="file" id="inputScript"></input>
 		<button id="run">RUN</button>
 		<button id="runSlow">RUN SLOW</button>
 		<button id="letters">Toggle to letters</button>
-		<br><input id="userInput" type="text"><button id="input">Input to Brainfuck</button>
+		<br>
+		<div id="inputDiv"><input id="userInput" type="text"><button id="input">Input to Brainfuck</button></div>
+		<div id="outputDiv"></div>
 		<script>
 			var inEl = document.getElementById("userInput");
 			inEl.disabled = true;
 			var brainfuck = new BrainfuckMachine(",++.", inEl);
 			var bEl = brainfuck.renderer.element;
-			bEl.align = "center";
+			bEl.align = "left";
 			document.body.appendChild(bEl);
 			brainfuck.renderer.last = 0;
 		</script>
