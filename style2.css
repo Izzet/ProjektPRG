@@ -1,0 +1,36 @@
+#codeDiv {
+	background-color : #EDEDED;
+	position : absolute;
+	top : 1%;
+	left : 1%;
+	width : 48%;
+	height : 90%;
+}
+#code {
+	position : absolute;
+	top : 25px;
+	left : 1%;
+	width : 98%;
+	height : 95%;
+	resize : none;
+}
+#errorLog {
+	position : relative;
+	left : 10%;
+}
+#outputDiv {
+	background-color : #EDEDED;
+	position : absolute;
+	top : 1%;
+	left : 51%;
+	width : 48%;
+	height : 90%;
+}
+#output {
+	position : absolute;
+	top : 25px;
+	left : 1%;
+	width : 98%;
+	height : 95%;
+	resize : none;
+}

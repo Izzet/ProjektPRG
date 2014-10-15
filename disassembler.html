@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="style2.css" type="text/css">
+	</head>
+	<body>
+		<script src="code/utils.js"></script>
+		<script src="code/disassembler.js"></script>
+		
+		<div id="codeDiv">
+		<button id="compile">COMPILE</button><span id="errorLog"></span>
+		<textarea id="code"></textarea>
+		</div>
+		<div id="outputDiv">
+		<textarea id="output" ></textarea>
+		</div>
+		<script>
+			var outputElement = document.getElementById("output");
+			outputElement.disabled = false;
+			var inputElement = document.getElementById("code");
+			var compileButton = document.getElementById("compile");
+			var errorLog = document.getElementById("errorLog");
+			
+			var DisassemblerCompiler = new Disassembler();
+			
+			DisassemblerCompiler.errorLogSpan = errorLog;
+			
+			compileButton.onclick = function (){
+				DisassemblerCompiler.compile(inputElement.value, outputElement);
+			};
+		</script>
+	</body>
+</html>

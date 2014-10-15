@@ -1,6 +1,7 @@
 function BrainfuckMachine (code, input){
 	this.memory = [0];
 	this.index = 0;
+	this.cellLimit = 255;
 	
 	this.code = code === undefined ? ",." : code;
 	this.cursor = 0;
@@ -19,10 +20,16 @@ function BrainfuckMachine (code, input){
 	var _this = this;
 	this.order = {
 		"+" : function (){
-			_this.memory[_this.index]++;
+			if(_this.memory[_this.index] < _this.cellLimit)
+				_this.memory[_this.index]++;
+			else
+				_this.memory[_this.index] = 0;
 		},
 		"-" : function (){
-			_this.memory[_this.index]--;
+			if(_this.memory[_this.index] > 0)
+				_this.memory[_this.index]--;
+			else
+				_this.memory[_this.index] = _this.cellLimit;
 		},
 		">" : function (){
 			if(_this.memory[_this.index+1] === undefined)
