@@ -1,4 +1,4 @@
-function BrainfuckMachine (code, input){
+function BrainfuckMachine (code, input, output){
 	this.memory = [0];
 	this.index = 0;
 	this.cellLimit = 255;
@@ -10,11 +10,12 @@ function BrainfuckMachine (code, input){
 	
 	this.steps = 0;
 	this.maxSteps = 100000;
+	this.interval = 5;
 	
 	this.waitingForInput = false;
 	this.doingAll = false;
 	
-	this.renderer = new BrainfuckRenderer();
+	this.renderer = new BrainfuckRenderer(output);
 	this.inputElement = input;
 	
 	var _this = this;
@@ -97,18 +98,36 @@ BrainfuckMachine.prototype.doAll = function (){
 		this.step();
 	};
 };
-BrainfuckMachine.prototype.faire = function(code){
-	this.code = code;
-	this.cursor = 0;
-	this.doAll();
-};
 BrainfuckMachine.prototype.doAllSlow = function (s){
 	this.steps = s === undefined ? 0 : s;
 	var _this = this;
 	if(this.cursor < this.code.length && this.steps < this.maxSteps){
 		this.step();
-		setTimeout(function (){_this.doAllSlow(_this.steps);}, 10);
+		setTimeout(function (){_this.doAllSlow(_this.steps);}, _this.interval);
 	};
+};
+BrainfuckMachine.prototype.doCode = function (code, slow){
+	code = code === undefined ? "" : code;
+	this.reset();
+	this.code = code;
+	slow ? this.doAllSlow() : this.doAll();
+};
+BrainfuckMachine.prototype.reset = function (){
+	this.memory = [0];
+	this.index = 0;
+	
+	this.code = "";
+	this.cursor = 0;
+	this.parStack = [];
+	this.parNum = 0;
+	
+	this.steps = 0;
+	this.maxSteps = 10000000;
+	
+	this.waitingForInput = false;
+	this.doingAll = false;
+	
+	this.renderer.reset();
 };
 BrainfuckMachine.prototype.input = function ( input ){
 	this.memory[this.index] = input;

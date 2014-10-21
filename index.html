@@ -16,14 +16,14 @@
 		<textarea id="code"></textarea>
 		</div>
 		<div id="inputDiv"><textarea id="userInput" ></textarea><button id="input">Input to Brainfuck</button></div>
-		<div id="outputDiv"></div>
+		<div id="outputDiv">
+		<span id="output"></span>
+		</div>
 		<script>
 			var inEl = document.getElementById("userInput");
 			inEl.disabled = true;
-			var brainfuck = new BrainfuckMachine("++", inEl);
-			var bEl = brainfuck.renderer.element;
-			bEl.align = "left";
-			document.body.appendChild(bEl);
+			var outEl = document.getElementById("output");
+			var brainfuck = new BrainfuckMachine("++", inEl, outEl);
 			brainfuck.renderer.last = 0;
 		</script>
 		<script>
@@ -34,6 +34,7 @@
 			var runner = document.getElementById("run");
 			var runnerSlow = document.getElementById("runSlow");
 			var letters = document.getElementById("letters");
+			var code = document.getElementById("code");
 			function loaded(string){
 				console.log(string);
 			};
@@ -44,13 +45,14 @@
 			inputFile.onchange = function (){
 				reader.readAsText(inputFile.files[0]);
 			};
+			insert.onclick = function (){
+				code.value += insert.value;
+			};
 			runner.onclick = function (){
-				brainfuck.code = reader.result;
-				brainfuck.doAll();
+				brainfuck.doCode(code.value, false);
 			};
 			runnerSlow.onclick = function (){
-				brainfuck.code = reader.result;
-				brainfuck.doAllSlow();
+				brainfuck.doCode(code.value, true);
 			};
 			letters.onclick = function (){
 				brainfuck.renderer.letters = !brainfuck.renderer.letters;

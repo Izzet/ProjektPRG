@@ -24,6 +24,14 @@
 	height : 22%;
 	font-size : 100%;
 }
+#outputDiv {
+	position : absolute;
+	background-color : #EDEDED;
+	top : 50%;
+	left : 1%;
+	width : 67%;
+	height : 48%;
+}
 #codeDiv {
 	background-color : #EDEDED;
 	position : absolute;

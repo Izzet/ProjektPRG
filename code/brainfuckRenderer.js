@@ -38,3 +38,8 @@ BrainfuckRenderer.prototype.adapt = function (n){
 	}
 	else return n;
 };
+BrainfuckRenderer.prototype.reset = function (){
+	this.content = [];
+	this.element.innerHTML = "";
+	this.last = 0;
+};
