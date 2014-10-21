@@ -95,7 +95,7 @@ function Disassembler (){
 		return out;
 	};
 	
-	this.ADDX = function (args){ // int target index - přičte hodnotu současné buňky k cílové, zmizí hodnota buňky
+	this.ADDX = function (args){ // int source index, int index1, int index2, ... - přičte hodnotu source k cílovým indexům, zmizí hodnota source, končí v source
 		var argsL = args.length;
 		var out = _this.MOVE([args[0], args[argsL-1]]);
 		if(args[0] == args[1]){
@@ -137,32 +137,25 @@ function Disassembler (){
 	};
 	
 	this.COPX = function (args){ // int source index, int first destination index, int second destination index, ... - maže obsah source, pointer končí v source
-		var argsL = args.length;
-		var out = _this.MOVE([args[0], args[argsL-1]]);
-		if(args[0] == args[1]){
-			return out;
-		}
-		else {
-			out+="[-";
-			for(var i = 1; i < args.length-1;i++){
-				if(args[0] == args[i])
-					continue;
-				out+=_this.MOVE([args[i],args[argsL-1]])+"+";
-			};
-			out+=_this.MOVE([args[0],args[argsL-1]])+"]";
-			return out;
-		}
+		var line = args[args.length-1];
+		var out = "";
+		for(var i = 1; i < args.length-1; i++){
+			out += _this.MOVE([args[i], line]);
+			out += _this.CLRC();
+		};
+		out += _this.ADDX(args);
+		return out;
 	};
 	
 	this.COPY = function (args){ // int source index, int first destination index, int second destination index, ...
-		var out = _this.COPX([args[0], _this.vars["MEMORY"], args[args.length-1]]);
+		var line = args[args.length-1];
+		var out = _this.ADDX([args[0], _this.vars["MEMORY"], line]);
 		var arguments = [];
 		arguments[0] = _this.vars["MEMORY"];
 		arguments[1] = args[0];
 		for(var i = 2; i < args.length+1;i++){
 			arguments[i] = args[i-1];
 		};
-		arguments[arguments.length-1] = args[args.length-1];
 		out+=_this.COPX(arguments);
 		return out;
 	};
