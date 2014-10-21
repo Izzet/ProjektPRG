@@ -1,7 +1,8 @@
 function Disassembler (){
-	this.pointer = 0;
+	
 	this.vars = [];
-	this.freeRam = 0;
+	this.vars["MEMORY"] = 0;
+	this.vars["CURRENT"] = 0;
 	
 	this.errorLogSpan = false;
 	this.errored = false;
@@ -25,7 +26,7 @@ function Disassembler (){
 	};
 	
 	this.RSRV = function (args){
-		this.freeRam += parseInt(args[0]);
+		_this.vars["MEMORY"]+=parseInt(args[0]);
 		return "";
 	};
 	
@@ -36,36 +37,40 @@ function Disassembler (){
 		}
 		var x = parseInt(args[0]);
 		var out = "";
-		var pointer = _this.pointer;
+		var pointer = _this.vars["CURRENT"];
 		
 		if(x-pointer > 0){
 			for(var i = 0; i < x-pointer; i++){
 				out += ">";
-				_this.pointer++;
+				_this.vars["CURRENT"]++;
 			};
 		}
 		else {
 			for(var i = 0; i < pointer-x; i++){
 				out += "<";
-				_this.pointer--;
+				_this.vars["CURRENT"]--;
 			};
 		}
 		return out;
 	};
 	
 	this.MOVM = function (){ // přesun do ramky - memory
-		var out = _this.MOVE([_this.freeRam]);
+		var out = _this.MOVE([_this.vars["MEMORY"]]);
 		return out;
 	};
 	
 	this.INIT = function (args){ // string variable name
-		if(parseInt(args[0]) == 0 || parseInt(args[0])){
+		if((parseInt(args[0]) == 0 || parseInt(args[0])) && (args[0] != "MEMORY" && args[0] != "CURRENT")){
 			handleError(_this.errorLogSpan, "Invalid variable name", args[args.length-1]);
 			return "";
 		}
-		_this.vars[args[0]] = _this.freeRam;
+		_this.vars[args[0]] = _this.vars["MEMORY"];
 		_this.RSRV([1,args[args.length-1]]);
 		return "";
+	};
+	
+	this.DELV = function (){ // bude mazat proměnné - je třeba vyřešit přemístění proměnných v poli
+		
 	};
 	
 	this.MOVT = function (args){ // string variable name
@@ -86,9 +91,17 @@ function Disassembler (){
 		return out;
 	};
 	
-	this.ADXC = function (args){ // int target index - přičte hodnotu současné buňky k cílové
-		var position = _this.pointer;
+	this.ADXC = function (args){ // int target index - přičte hodnotu současné buňky k cílové, zmizí hodnota buňky
+		var position = _this.vars["CURRENT"];
 		var out = "[-"+_this.MOVE(args)+"+"+_this.MOVE([position, args[args.length-1]])+"]";
+		return out;
+	};
+	
+	this.ADDC =  function (args){
+		var argsL = args.length;
+		var out = _this.COPY([_this.vars["CURRENT"], _this.vars["MEMORY"], args[argsL-1]]);
+		out += _this.MOVM(args[argsL-1]);
+		out += _this.ADXC([args[0],args[argsL-1]]);
 		return out;
 	};
 	
@@ -100,21 +113,28 @@ function Disassembler (){
 		return out;
 	};
 	
-	this.COPX = function (args){ // int source index, int first destination index, int second destination index, ... - maže obsah source
+	this.COPX = function (args){ // int source index, int first destination index, int second destination index, ... - maže obsah source, pointer končí v source
 		var argsL = args.length;
-		var out = _this.MOVE([args[0], argsL]);
-		out+="[-";
-		for(var i = 1; i < args.length-1;i++){
-			out+=_this.MOVE([args[i],argsL])+"+";
-		};
-		out+=_this.MOVE([args[0],argsL])+"]";
-		return out;
+		var out = _this.MOVE([args[0], args[argsL-1]]);
+		if(args[0] == args[1]){
+			return out;
+		}
+		else {
+			out+="[-";
+			for(var i = 1; i < args.length-1;i++){
+				if(args[0] == args[i])
+					continue;
+				out+=_this.MOVE([args[i],args[argsL-1]])+"+";
+			};
+			out+=_this.MOVE([args[0],args[argsL-1]])+"]";
+			return out;
+		}
 	};
 	
 	this.COPY = function (args){ // int source index, int first destination index, int second destination index, ...
-		var out = _this.COPX([args[0], _this.freeRam, args[args.length-1]]);
+		var out = _this.COPX([args[0], _this.vars["MEMORY"], args[args.length-1]]);
 		var arguments = [];
-		arguments[0] = _this.freeRam;
+		arguments[0] = _this.vars["MEMORY"];
 		arguments[1] = args[0];
 		for(var i = 2; i < args.length+1;i++){
 			arguments[i] = args[i-1];
@@ -132,12 +152,33 @@ function Disassembler (){
 		arguments[args.length-1] = args[args.length-1];
 		return _this.COPY(arguments);
 	};
+	
+	this.ITER = function (args){ // Oddělování pouze středníkem, bez mezery
+		var out = "";
+		var zpet = _this.vars["CURRENT"];
+		out += _this.MOVM()+_this.RSRV(1);
+		for(var i = 0; i < parseInt(args[0])+1; i++){
+			out+="+";
+		};
+		out += _this.MOVE(zpet, args[args.length-1]);
+		funcs = args.slice(1,args.length-2);
+		funcs = funcs.join(" ").split(";");
+		out+= "[";
+		for(var i = 0; i < funcs.length; i++){
+			out += _this.compileOrder(funcs[i]);
+		};
+		zpet = _this.vars["CURRENT"];
+		out += _this.MOVM()+"<";
+		out += "-]"+_this.RSRV(-1)+_this.MOVE(zpet);
+		return out;
+	};
 };
 Disassembler.prototype.compile = function (code, outputElement){
 	
-	this.pointer = 0;
 	this.vars = [];
-	this.freeRam = 0;
+	this.vars["MEMORY"] = 0;
+	this.vars["CURRENT"] = 0;
+	
 	this.errorLogSpan.innerHTML = "";
 	
 	var lines = code.split("\n");
@@ -158,6 +199,18 @@ Disassembler.prototype.compile = function (code, outputElement){
 	};
 	
 	outputElement.value = output;
+};
+
+Disassembler.prototype.compileOrder = function (code){
+	output = "";
+	line = code.split(" ");
+	args = line.splice(1,line.length-1);
+	if(this[line[0]])
+		output += this[line[0]](args);
+	else {
+		handleError(this.errorLogSpan, line[0]+" is not defined", i+1);
+	}
+	return output;
 };
 
 function handleError(errorLogElement, type, lineNumber){
