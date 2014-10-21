@@ -7,3 +7,4 @@ přechodem mezi vyššími jazyky (typu JS), a brainfuckem. Jsou
 naimplementovány příkazy pro kopírování, zavádění proměnných, výpis a 
 přímé kódování. Čeká ještě hodně práce, ale základ je postaven.
 <br>
+21.10.2014 Práce na disassembleru, přidání ADXC, ADDC a dalších příkazů
