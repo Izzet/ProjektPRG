@@ -17,12 +17,27 @@ function Disassembler (){
 		return "+";
 	};
 	
+	this.INCM = function (args){
+		var out = "";
+		var n = parseInt(args[0]);
+		for(var i = 0; i < n; i++){
+			out += "+";
+		};
+		return out;
+	};
+	
 	this.DECC = function (){
 		return "-";
 	};
 	
 	this.ECHC = function (){
 		return ".";
+	};
+	
+	this.ECHO = function (args){
+		var out = _this.MOVT(args);
+		out += _this.ECHC();
+		return out;
 	};
 	
 	this.INPC = function (){
@@ -113,7 +128,7 @@ function Disassembler (){
 		}
 	};
 	
-	this.ADDS =  function (args){ // int target index - přičte hodnotu současné buňky k cílové buňce
+	this.ADDS =  function (args){ // int target index - přičte hodnotu source buňky k cílovým buňkám
 		var line = args[args.length-1];
 		_this.RSRV([1, line]);
 		var out = _this.ADDX([args[0], _this.vars["MEMORY"]-1, line]);
@@ -122,10 +137,19 @@ function Disassembler (){
 		arguments[1] = args[0];
 		for(var i = 2; i < args.length+1;i++){
 			arguments[i] = args[i-1];
-		};console.log(arguments);
+		};
 		out+=_this.ADDX(arguments);
 		_this.RSRV([-1,line]);
 		return out;
+	};
+	
+	this.ADDV = function (args){
+		var arguments = [];
+		for(var i = 0; i < args.length-1; i++){
+			arguments[i] = _this.vars[args[i]];
+		};
+		arguments[arguments.length] = args[args.length-1];
+		return _this.ADDS(arguments);
 	};
 	
 	this.SETV = function (args){ // string variable name, int value
@@ -169,25 +193,47 @@ function Disassembler (){
 		return _this.COPY(arguments);
 	};
 	
-	this.ITER = function (args){ // Oddělování pouze středníkem, bez mezery
-		var out = "";
-		var zpet = _this.vars["CURRENT"];
-		out += _this.MOVM()+_this.RSRV(1);
-		for(var i = 0; i < parseInt(args[0])+1; i++){
-			out+="+";
-		};
-		out += _this.MOVE(zpet, args[args.length-1]);
-		funcs = args.slice(1,args.length-2);
-		funcs = funcs.join(" ").split(";");
-		out+= "[";
+	this.ITRI = function (args){ // int index, funkce
+		var line = args[args.length-1];
+		var funcs = args.slice(1,args.length-1).join(" ").split(";");
+		
+		var position = _this.vars["CURRENT"]; // uložení pozice
+		var out = _this.MOVE([args[0],line]); // přemístění na pozici, dle které se iteruje
+		out += "[-"+_this.MOVE([position, line]); // dekrementace a přemístění na kontext itri 
 		for(var i = 0; i < funcs.length; i++){
-			out += _this.compileOrder(funcs[i]);
+			out += cache = _this.compileOrder(funcs[i], line); // provádění funkcí - musí končit opět na indexu začátku
 		};
-		zpet = _this.vars["CURRENT"];
-		out += _this.MOVM()+"<";
-		out += "-]"+_this.RSRV(-1)+_this.MOVE(zpet);
+		out += _this.MOVE([args[0], line])+"]"; // přesun k buňce, dle které iterujeme
+		
 		return out;
 	};
+	
+	this.ITER = function (args){ // int numberOfTimes, funkce, oddělené středníkem bez mezer ve standardním formátu - jeden řádek
+		var line = args[args.length-1];
+		var funcs = args.slice(1,args.length-1).join(" ").split(";");
+		
+		var position = _this.vars["CURRENT"];
+		var out = _this.MOVM();
+		var iIndex = _this.vars["CURRENT"];
+		out += _this.INCM([args[0], line]);
+		_this.RSRV([1,line]);
+		out += "[-"+_this.MOVE([position, line]); // dekrementace a přemístění na kontext iter
+		for(var i = 0; i < funcs.length; i++){
+			out += _this.compileOrder(funcs[i], line); // provádění funkcí - musí končit opět na indexu začátku
+		};
+		out += _this.MOVE([iIndex, line])+"]"; // zpět na pozici, dle které se iteruje
+		_this.RSRV([-1, line]);
+		return out;
+	};
+	
+	this.ITVX = function (args){
+		var line = args[args.length-1];
+		var out = _this.COPV([args[0], "MEMORY", line]);
+		_this.RSRV([1, line]);
+		
+		_this.RSRV([])
+	};
+	
 };
 Disassembler.prototype.compile = function (code, outputElement){
 	
@@ -218,14 +264,16 @@ Disassembler.prototype.compile = function (code, outputElement){
 	outputElement.value = output;
 };
 
-Disassembler.prototype.compileOrder = function (code){
+Disassembler.prototype.compileOrder = function (code, line){
 	output = "";
 	line = code.split(" ");
 	args = line.splice(1,line.length-1);
+	this.importEnvironmentVariables(args);
+	args[args.length] = line;
 	if(this[line[0]])
 		output += this[line[0]](args);
 	else {
-		handleError(this.errorLogSpan, line[0]+" is not defined", i+1);
+		handleError(this.errorLogSpan, line[0]+" is not defined", line);
 	}
 	return output;
 };
