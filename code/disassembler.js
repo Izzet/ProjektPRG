@@ -278,6 +278,41 @@ Disassembler.prototype.compileOrder = function (code, line){
 	return output;
 };
 
+Disassembler.prototype.compileBlock = function (code, line){
+	
+	var subCode = code.substring(1,code.length-1); // Odstranění koncových závorek
+	// Nyní detekce a přiřazení prvního bloku příkazů
+	var subBegin = subCode.indexOf("{");
+	if(subBegin == -1)
+		return subCode.split(";");
+	var subBlocks = 0;
+	var subEnd = subBegin+1;
+	for(var c = subEnd; subCode.charAt(c) != "";c++){
+		subEnd = c;
+		if(subCode.charAt(subEnd) == "}" && subBlocks == 0)
+			break;
+		if(subCode.charAt(c) == "{")
+			subBlocks++;
+		if(subCode.charAt(c) == "}")
+			subBlocks--;
+	};
+	var subSubCode = subCode.substring(subBegin,subEnd+1);
+	// Rozdělení příkazů před blokem
+	var predBlokovymPrikazem = subCode.lastIndexOf(";", subBegin);
+	var ordersBefore = subCode.substring(0, predBlokovymPrikazem).split(";");
+	var ordersBrainfuck = "";
+	for(var i = 0; i < ordersBefore.length; i++){
+		ordersBrainfuck += this.compileOrder(ordersBefore[i]);
+	};
+	console.log(ordersBrainfuck);
+	var polePrikazu = this.compileBlock(subSubCode, line);
+	console.log(polePrikazu);
+	var ordersInMiddle = subCode.substring(predBlokovymPrikazem+1, subBegin)+polePrikazu;
+	var ordersPast = subCode.substring(subEnd+2, subCode.length).split(";");
+	
+	return [ordersBefore,ordersInMiddle, ordersPast];
+};
+
 Disassembler.prototype.importEnvironmentVariables = function (args){
 	for(var i = 0; i < args.length; i++){
 		if(args[i] == "MEMORY"){
