@@ -7,4 +7,4 @@ přechodem mezi vyššími jazyky (typu JS), a brainfuckem. Jsou
 naimplementovány příkazy pro kopírování, zavádění proměnných, výpis a 
 přímé kódování. Čeká ještě hodně práce, ale základ je postaven.
 <br>
-21.10.2014 Práce na disassembleru, přidání ADXC, ADDC a dalších příkazů
+21.10.2014 Práce na disassembleru, přidání ADDX, ADDS, ITER a ITRI. Pomocí těchto poté sepsán skript pro násobení v disassembleru, který jsem zkompiloval a otestoval v brainfucku - funguje. Oba skripty jsou dostupné ve složkách sampleBrainfuck a sampleDisassembler. Také jsem upravil index - už je vidět output.
