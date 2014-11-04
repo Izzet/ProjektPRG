@@ -1,0 +1,9 @@
+CODE = "{prikaz1; prikaz2 arg1 arg2; prikazI0 {prikaz I1;...};...}"
+je tøeba získat brainfuckový kód
+----Cyklus detekce blokových pøíkazù----
+1) vyhodnotit pøíkazy, které jsou v bloku na první úrovni
+2) pøejít na vyhodnocení vnitøního bloku
+	1) vzít pøíkaz oèekávající blok
+	2) jako argument pøedat standartnì dìlený blok
+----Cyklus detekce blokových pøíkazù----
+4) vrátit hodnoty

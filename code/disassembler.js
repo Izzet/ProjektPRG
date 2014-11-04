@@ -106,7 +106,7 @@ function Disassembler (){
 	};
 	
 	this.CLRV = function (args){ // string variable name
-		var out = _this.MOVT(args[0])+_this.CLRC();
+		var out = _this.MOVT(args)+_this.CLRC();
 		return out;
 	};
 	
@@ -195,22 +195,20 @@ function Disassembler (){
 	
 	this.ITRI = function (args){ // int index, funkce
 		var line = args[args.length-1];
-		var funcs = args.slice(1,args.length-1).join(" ").split(";");
+		var block = args.slice(1,args.length-1).join(" ");
 		
 		var position = _this.vars["CURRENT"]; // uložení pozice
 		var out = _this.MOVE([args[0],line]); // přemístění na pozici, dle které se iteruje
 		out += "[-"+_this.MOVE([position, line]); // dekrementace a přemístění na kontext itri 
-		for(var i = 0; i < funcs.length; i++){
-			out += cache = _this.compileOrder(funcs[i], line); // provádění funkcí - musí končit opět na indexu začátku
-		};
+		out += _this.compileBlock(block, line); // Vnitřní příkazy musí končit na výchozím indexu
 		out += _this.MOVE([args[0], line])+"]"; // přesun k buňce, dle které iterujeme
 		
 		return out;
 	};
 	
-	this.ITER = function (args){ // int numberOfTimes, funkce, oddělené středníkem bez mezer ve standardním formátu - jeden řádek
+	this.ITER = function (args){ // int numberOfTimes, block funkce, oddělené středníkem bez mezer
 		var line = args[args.length-1];
-		var funcs = args.slice(1,args.length-1).join(" ").split(";");
+		var block = args.slice(1,args.length-1).join(" ");
 		
 		var position = _this.vars["CURRENT"];
 		var out = _this.MOVM();
@@ -218,9 +216,7 @@ function Disassembler (){
 		out += _this.INCM([args[0], line]);
 		_this.RSRV([1,line]);
 		out += "[-"+_this.MOVE([position, line]); // dekrementace a přemístění na kontext iter
-		for(var i = 0; i < funcs.length; i++){
-			out += _this.compileOrder(funcs[i], line); // provádění funkcí - musí končit opět na indexu začátku
-		};
+		out += _this.compileBlock(block, line); // Vnitřní příkazy musí končit na výchozím indexu
 		out += _this.MOVE([iIndex, line])+"]"; // zpět na pozici, dle které se iteruje
 		_this.RSRV([-1, line]);
 		return out;
@@ -228,10 +224,15 @@ function Disassembler (){
 	
 	this.ITVX = function (args){
 		var line = args[args.length-1];
-		var out = _this.COPV([args[0], "MEMORY", line]);
-		_this.RSRV([1, line]);
-		
-		_this.RSRV([])
+		var out = "";
+		var index = _this.vars[args[0]];
+		var arguments = [];
+		arguments[0] = index;
+		for(var i = 1; i < args.length; i++){
+			arguments[i] = args[i];
+		};
+		out += _this.ITRI(arguments);
+		return out;
 	};
 	
 };
@@ -283,9 +284,60 @@ Disassembler.prototype.compileBlock = function (code, line){
 	var subCode = code.substring(1,code.length-1); // Odstranění koncových závorek
 	// Nyní detekce a přiřazení prvního bloku příkazů
 	var subBegin = subCode.indexOf("{");
-	if(subBegin == -1)
-		return subCode.split(";");
+	var out = "";
+	if(subBegin == -1){
+		var orders = subCode.split(";");
+		for(var i = 0; i < orders.length-1; i++){
+			out += this.compileOrder(orders[i]);
+		};
+		return out;
+	}
 	var subBlocks = 0;
+	var subEnd = subBegin+1;
+	var i = 0;
+	var commandEnd = 0;
+	while(i < subCode.length){
+		
+		commandEnd = subCode.indexOf(";",i);console.log(i,commandEnd,subBegin);
+		if(i == commandEnd){
+			i++;
+			continue;
+		}
+		if(commandEnd < subBegin){
+			out += this.compileOrder(subCode.substring(i,commandEnd));
+			i = commandEnd+1;
+		}
+		else{
+			for(var c = subEnd; subCode.charAt(c) != "";c++){
+				subEnd = c;
+				if(subCode.charAt(subEnd) == "}" && subBlocks == 0)
+					break;
+				if(subCode.charAt(c) == "{")
+					subBlocks++;
+				if(subCode.charAt(c) == "}")
+					subBlocks--;
+			};
+			out += this.compileOrder(subCode.substring(i, subEnd+1));
+			i=subEnd+2;
+			subBegin = subCode.indexOf("{",i) == -1 ? Infinity : subCode.indexOf("{",i);
+		}
+		/*
+		for(var c = subEnd; subCode.charAt(c) != "";c++){
+			subEnd = c;
+			if(subCode.charAt(subEnd) == "}" && subBlocks == 0)
+				break;
+			if(subCode.charAt(c) == "{")
+				subBlocks++;
+			if(subCode.charAt(c) == "}")
+				subBlocks--;
+		};
+		
+		console.log(subCode.substring(subBegin, subEnd+1));
+		
+		subBegin=subCode.indexOf("{",subEnd);*/
+	};
+	return out;
+	/*var subBlocks = 0;
 	var subEnd = subBegin+1;
 	for(var c = subEnd; subCode.charAt(c) != "";c++){
 		subEnd = c;
@@ -304,13 +356,13 @@ Disassembler.prototype.compileBlock = function (code, line){
 	for(var i = 0; i < ordersBefore.length; i++){
 		ordersBrainfuck += this.compileOrder(ordersBefore[i]);
 	};
-	console.log(ordersBrainfuck);
+	console.log(subCode.substring(predBlokovymPrikazem+1, subCode.indexOf(" ")));
 	var polePrikazu = this.compileBlock(subSubCode, line);
-	console.log(polePrikazu);
+	console.log(polePrikazu+"HEHRE");
 	var ordersInMiddle = subCode.substring(predBlokovymPrikazem+1, subBegin)+polePrikazu;
 	var ordersPast = subCode.substring(subEnd+2, subCode.length).split(";");
 	
-	return [ordersBefore,ordersInMiddle, ordersPast];
+	return [ordersBefore,ordersInMiddle, ordersPast];*/
 };
 
 Disassembler.prototype.importEnvironmentVariables = function (args){
