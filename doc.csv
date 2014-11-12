@@ -1,0 +1,18 @@
+HARD;CODE;Přepíše CODE přímo do brainfucku;
+INCC;;Zvýší hodnotu současné buňky o 1 – brainfuckové +;
+INCM;N;Zvýší hodnotu současné buňky o N;Argument not a number
+DECC;;Sníží hodnotu současné buňky o 1 – brainfuckové -;
+ECHC;;Vrátí hodnotu současné buňky – brainfuckové .;
+ECHO;VAR;Vrátí hodnotu proměnné VAR;Unknown variable
+INPC;;Vyžádá si uživatelský vstup, který uloží do současné buňky;
+RSRV;N;Zarezervuje N buňek – operační paměť brainfucku se posune o N buněk dál;Argument not a number
+MOVE;INDEX;Přemístí se k buňce s indexem INDEX;Argument not a number
+MOVM;;Přemístí se k první buňce v operační paměti;
+INIT;VAR;Vytvoří novou proměnnou se jménem VAR a zarezervuje jí místo;Invalid variable name
+MOVT;VAR;Přemístí se k buňce, která obsahuje obsah proměnné VAR;Unknown variable
+CLRC;;Vyčístí současnou buňku – nastaví ji na 0;
+CLRV;VAR;Vyčistí buňku, která má obsah proměnné VAR;Unknown variable
+ADDX;i1 i2 i3 …;Vezme obsah buňky na indexu i1 a přičte ho k buňkám na indexech i2, i3, …, přičemž smaže obsah na i1;Nth argument not a number
+ADDS;i1 i2 i3 …;Vezme obsah buňky na indexu i1, převede ho do paměti a poté provede ADDX na buňky na indexech i1, i2, i3 … - tedy přičte obsah i1 k i2, i3, … a přitom zachová obsah i1;Nth argument not a number
+ADDV;v1 v2 v3 …;Provádí ADDS, ale podle jmen proměnných;Nth variable is unknown
+SETV;var n;Nastaví hodnotu proměnné var na n;Unknown variable, Second argument not a number

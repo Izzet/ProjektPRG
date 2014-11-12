@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<HTML>
+<HEAD>
+	
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1250">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="LibreOffice 4.1.1.2 (Windows)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="0;0">
+	
+	<STYLE>
+		<!-- 
+		BODY,DIV,TABLE,THEAD,TBODY,TFOOT,TR,TH,TD,P { font-family:"Arial"; font-size:x-small }
+		 -->
+	</STYLE>
+	
+</HEAD>
+
+<BODY TEXT="#000000">
+<TABLE CELLSPACING="0" COLS="4" BORDER="0">
+	<COLGROUP WIDTH="49"></COLGROUP>
+	<COLGROUP WIDTH="69"></COLGROUP>
+	<COLGROUP WIDTH="1049"></COLGROUP>
+	<COLGROUP WIDTH="315"></COLGROUP>
+	<TR>
+		<TD HEIGHT="18" ALIGN="LEFT">HARD</TD>
+		<TD ALIGN="LEFT">CODE</TD>
+		<TD ALIGN="LEFT">Přepíše CODE přímo do brainfucku</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">INCC</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Zvýší hodnotu současné buňky o 1 &ndash; brainfuckové +</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">INCM</TD>
+		<TD ALIGN="LEFT">N</TD>
+		<TD ALIGN="LEFT">Zvýší hodnotu současné buňky o N</TD>
+		<TD ALIGN="LEFT">Argument not a number</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">DECC</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Sníží hodnotu současné buňky o 1 &ndash; brainfuckové -</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">ECHC</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Vrátí hodnotu současné buňky &ndash; brainfuckové .</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">ECHO</TD>
+		<TD ALIGN="LEFT">VAR</TD>
+		<TD ALIGN="LEFT">Vrátí hodnotu proměnné VAR</TD>
+		<TD ALIGN="LEFT">Unknown variable</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">INPC</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Vyžádá si uživatelský vstup, který uloží do současné buňky</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">RSRV</TD>
+		<TD ALIGN="LEFT">N</TD>
+		<TD ALIGN="LEFT">Zarezervuje N buňek &ndash; operační paměť brainfucku se posune o N buněk dál</TD>
+		<TD ALIGN="LEFT">Argument not a number</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">MOVE</TD>
+		<TD ALIGN="LEFT">INDEX</TD>
+		<TD ALIGN="LEFT">Přemístí se k buňce s indexem INDEX</TD>
+		<TD ALIGN="LEFT">Argument not a number</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">MOVM</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Přemístí se k první buňce v operační paměti</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">INIT</TD>
+		<TD ALIGN="LEFT">VAR</TD>
+		<TD ALIGN="LEFT">Vytvoří novou proměnnou se jménem VAR a zarezervuje jí místo</TD>
+		<TD ALIGN="LEFT">Invalid variable name</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">MOVT</TD>
+		<TD ALIGN="LEFT">VAR</TD>
+		<TD ALIGN="LEFT">Přemístí se k buňce, která obsahuje obsah proměnné VAR</TD>
+		<TD ALIGN="LEFT">Unknown variable</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">CLRC</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+		<TD ALIGN="LEFT">Vyčístí současnou buňku &ndash; nastaví ji na 0</TD>
+		<TD ALIGN="LEFT"><BR></TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">CLRV</TD>
+		<TD ALIGN="LEFT">VAR</TD>
+		<TD ALIGN="LEFT">Vyčistí buňku, která má obsah proměnné VAR</TD>
+		<TD ALIGN="LEFT">Unknown variable</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">ADDX</TD>
+		<TD ALIGN="LEFT">i1 i2 i3 &hellip;</TD>
+		<TD ALIGN="LEFT">Vezme obsah buňky na indexu i1 a přičte ho k buňkám na indexech i2, i3, &hellip;, přičemž smaže obsah na i1</TD>
+		<TD ALIGN="LEFT">Nth argument not a number</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">ADDS</TD>
+		<TD ALIGN="LEFT">i1 i2 i3 &hellip;</TD>
+		<TD ALIGN="LEFT">Vezme obsah buňky na indexu i1, převede ho do paměti a poté provede ADDX na buňky na indexech i1, i2, i3 &hellip; - tedy přičte obsah i1 k i2, i3, &hellip; a přitom zachová obsah i1</TD>
+		<TD ALIGN="LEFT">Nth argument not a number</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">ADDV</TD>
+		<TD ALIGN="LEFT">v1 v2 v3 &hellip;</TD>
+		<TD ALIGN="LEFT">Provádí ADDS, ale podle jmen proměnných</TD>
+		<TD ALIGN="LEFT">Nth variable is unknown</TD>
+	</TR>
+	<TR>
+		<TD HEIGHT="17" ALIGN="LEFT">SETV</TD>
+		<TD ALIGN="LEFT">var n</TD>
+		<TD ALIGN="LEFT">Nastaví hodnotu proměnné var na n</TD>
+		<TD ALIGN="LEFT">Unknown variable, Second argument not a number</TD>
+	</TR>
+</TABLE>
+<!-- ************************************************************************** -->
+</BODY>
+
+</HTML>

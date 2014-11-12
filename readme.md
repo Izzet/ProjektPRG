@@ -16,3 +16,6 @@ Přidána funkce ITVX - iteruje podle hodnoty proměnné, přičemž ji mění.
 Dále opraven bug v SETV - nyní již předává MOVT správné argumenty
 Rozhodl jsem se také vytvořit si dokumentaci jednotlivých disassemblerových funkcí, to určitě pomůže mě i někomu
 jinému, kdyby se snažil pochopit, co jsem to tvořil.
+12.11.2014 Práce na dokumentaci a debugging - procházení současných funkcionalit
+programu a jejich oprava - ještě není hotovo, ale základní funkce už jsou popsané
+v doc.html

@@ -6,6 +6,7 @@ function Disassembler (){
 	
 	this.errorLogSpan = false;
 	this.errored = false;
+	this.suffixes = ["st", "nd", "rd", "th"];
 	
 	var _this = this
 	
@@ -19,6 +20,10 @@ function Disassembler (){
 	
 	this.INCM = function (args){
 		var out = "";
+		if(!_this.isNumber(args[0])){
+			_this.handleError("INCM: Argument not a number", args[args.length-1]);
+			return "";
+		}
 		var n = parseInt(args[0]);
 		for(var i = 0; i < n; i++){
 			out += "+";
@@ -35,7 +40,12 @@ function Disassembler (){
 	};
 	
 	this.ECHO = function (args){
-		var out = _this.MOVT(args);
+		var out = "";
+		if(!_this.isVariable(args[0])){
+			_this.handleError("ECHO: Argument not a variable", args[args.length-1]);
+			return out;
+		}
+		out += _this.MOVT(args[0]);
 		out += _this.ECHC();
 		return out;
 	};
@@ -45,13 +55,16 @@ function Disassembler (){
 	};
 	
 	this.RSRV = function (args){
-		_this.vars["MEMORY"]+=parseInt(args[0]);
+		if(_this.isNumber(args[0]))
+			_this.vars["MEMORY"]+=parseInt(args[0]);
+		else
+			_this.handleError("RSRV: Argument not a number", args[args.length-1]);
 		return "";
 	};
 	
 	this.MOVE = function (args){ // int index
-		if(!parseInt(args[0]) && parseInt(args[0]) != 0){
-			handleError(_this.errorLogSpan, "MOVE: Argument not a number", args[args.length-1]);
+		if(!_this.isNumber(args[0])){
+			_this.handleError("MOVE: Argument not a number", args[args.length-1]);
 			return "";
 		}
 		var x = parseInt(args[0]);
@@ -73,14 +86,14 @@ function Disassembler (){
 		return out;
 	};
 	
-	this.MOVM = function (){ // přesun do ramky - memory
-		var out = _this.MOVE([_this.vars["MEMORY"]]);
+	this.MOVM = function (args){ // přesun do ramky - memory
+		var out = _this.MOVE([_this.vars["MEMORY"], args[0]]);
 		return out;
 	};
 	
 	this.INIT = function (args){ // string variable name
-		if((parseInt(args[0]) == 0 || parseInt(args[0])) && (args[0] != "MEMORY" && args[0] != "CURRENT")){
-			handleError(_this.errorLogSpan, "Invalid variable name", args[args.length-1]);
+		if(_this.isNumber(args[0]) || _this.isVariable(args[0])){
+			_this.handleError("INIT: Invalid variable name", args[args.length-1]);
 			return "";
 		}
 		_this.vars[args[0]] = _this.vars["MEMORY"];
@@ -93,8 +106,8 @@ function Disassembler (){
 	};
 	
 	this.MOVT = function (args){ // string variable name
-		if(!_this.vars[args[0]] && _this.vars[args[0]] !== 0){
-			handleError(_this.errorLogSpan, "Unknown variable", args[args.length-1]);
+		if(!_this.isVariable(args[0])){
+			_this.handleError("MOVT: Unknown variable", args[args.length-1]);
 			return "";
 		}
 		var out = _this.MOVE([_this.vars[args[0]], args[args.length-1]]);
@@ -106,11 +119,21 @@ function Disassembler (){
 	};
 	
 	this.CLRV = function (args){ // string variable name
+		if(!_this.isVariable(args[0])){
+			_this.handleError("CLRV: Unknown variable", args[args.length-1]);
+			return "";
+		}
 		var out = _this.MOVT(args)+_this.CLRC();
 		return out;
 	};
 	
 	this.ADDX = function (args){ // int source index, int index1, int index2, ... - přičte hodnotu source k cílovým indexům, zmizí hodnota source, končí v source
+		for(var i = 0; i < args.length-1; i++){
+			if(!_this.isNumber(args[i])){
+				_this.handleError("ADDX: "+(i+1)+_this.getSuffix(i)+" argument is not a number",args[args.length-1]);
+				return "";
+			}
+		};
 		var argsL = args.length;
 		var out = _this.MOVE([args[0], args[argsL-1]]);
 		if(args[0] == args[1]){
@@ -129,6 +152,12 @@ function Disassembler (){
 	};
 	
 	this.ADDS =  function (args){ // int target index - přičte hodnotu source buňky k cílovým buňkám
+		for(var i = 0; i < args.length-1; i++){
+			if(!_this.isNumber(args[i])){
+				_this.handleError("ADDS: "+(i+1)+_this.getSuffix(i)+" argument is not a number",args[args.length-1]);
+				return "";
+			}
+		};
 		var line = args[args.length-1];
 		_this.RSRV([1, line]);
 		var out = _this.ADDX([args[0], _this.vars["MEMORY"]-1, line]);
@@ -146,6 +175,10 @@ function Disassembler (){
 	this.ADDV = function (args){
 		var arguments = [];
 		for(var i = 0; i < args.length-1; i++){
+			if(!_this.isVariable(args[i])){console.log(args);
+				_this.handleError("ADDV: "+(i+1)+_this.getSuffix(i)+" variable is unknown",args[args.length-1]);
+				return "";
+			}
 			arguments[i] = _this.vars[args[i]];
 		};
 		arguments[arguments.length] = args[args.length-1];
@@ -153,7 +186,15 @@ function Disassembler (){
 	};
 	
 	this.SETV = function (args){ // string variable name, int value
-		var out = _this.CLRV(args);
+		if(!_this.isVariable(args[0])){
+			_this.handleError("SETV: Unknown variable", args[args.length-1]);
+			return "";
+		}
+		if(!_this.isNumber(args[1])){
+			_this.handleError("SETV: Second argument not a number", args[args.length-1]);
+			return "";
+		}
+		var out = _this.CLRV(args[0]);
 		for(var i = 0; i < parseInt(args[1]); i++){
 			out+="+";
 		};
@@ -251,32 +292,24 @@ Disassembler.prototype.compile = function (code, outputElement){
 	var output = "";
 	
 	for(var i = 0; i < lines.length; i++){
-		line = lines[i].split(" ");
-		args = line.splice(1,line.length-1);
-		this.importEnvironmentVariables(args);
-		args[args.length] = i+1;
-		if(this[line[0]])
-			output += this[line[0]](args);
-		else {
-			handleError(this.errorLogSpan, line[0]+" is not defined", i+1);
-		}
+		output += this.compileOrder(lines[i], i+1);
 	};
 	
 	outputElement.value = output;
 };
 
-Disassembler.prototype.compileOrder = function (code, line){
+Disassembler.prototype.compileOrder = function (code, lineID){
 	output = "";
 	line = code.split(" ");
 	args = line.splice(1,line.length-1);
 	this.importEnvironmentVariables(args);
-	args[args.length] = line;
+	args[args.length] = lineID;
 	if(this[line[0]])
 		output += this[line[0]](args);
 	else {
-		handleError(this.errorLogSpan, line[0]+" is not defined", line);
+		_this.handleError(line[0]+" is not defined", lineID);
 	}
-	return output;
+	return output+"\n";
 };
 
 Disassembler.prototype.compileBlock = function (code, line){
@@ -376,10 +409,37 @@ Disassembler.prototype.importEnvironmentVariables = function (args){
 	};
 };
 
-function handleError(errorLogElement, type, lineNumber){console.log("error now");
+Disassembler.prototype.handleError = function (type, lineNumber){console.log("error now");
 	if(!type)
 		var type = "Undefined";
 	if(!lineNumber)
 		var lineNumber = "undefined";
-	errorLogElement.innerHTML += type+" error on line "+lineNumber+"<br>";
+	this.errorLogSpan.innerHTML += type+" error on line "+lineNumber+"<br>";
+};
+
+Disassembler.prototype.isNumber = function (arg){
+	if(parseInt(arg) || parseInt(arg) == 0){
+		return true;
+	}
+	else {
+		return false;
+	}
+};
+
+Disassembler.prototype.isVariable = function (arg){
+	if(this.vars[arg] == undefined){
+		return false;
+	}
+	else{
+		return true;
+	}
+};
+
+Disassembler.prototype.getSuffix = function (num){
+	if(num < 3){
+		return this.suffixes[num];
+	}
+	else{
+		return this.suffixes[3];
+	}
 };
