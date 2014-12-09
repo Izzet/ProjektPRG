@@ -276,6 +276,20 @@ function Disassembler (){
 		return out;
 	};
 	
+	this.IFCI = function (args){
+		var line = args[args.length-1];
+		var start = _this.vars["CURRENT"];
+		var targetIndex = args[0];
+		var out = _this.MOVE([targetIndex, line]);
+		out += "["+_this.MOVE([start, line]);
+		out += _this.compileBlock(args[1]);
+		out += _this.MOVM([line])+_this.INCC([line])+_this.MOVE([targetIndex, line])+_this.CLRC()+"]";
+		out += _this.MOVM([line])+"[";
+		out += _this.DECC([line])+_this.MOVE([targetIndex, line])+_this.INCC([line])+_this.MOVM([line])+"]";
+		out += _this.MOVE([start, line]);
+		return out;
+	};
+	
 };
 Disassembler.prototype.compile = function (code, outputElement){
 	
