@@ -1,4 +1,4 @@
-function BrainfuckMachine (code, input, output){
+function BrainfuckMachine (code, input, output, memory){
 	this.memory = [0];
 	this.index = 0;
 	this.cellLimit = 255;
@@ -14,8 +14,8 @@ function BrainfuckMachine (code, input, output){
 	
 	this.waitingForInput = false;
 	this.doingAll = false;
-	
-	this.renderer = new BrainfuckRenderer(output);
+	console.log(memory);
+	this.renderer = new BrainfuckRenderer(output, memory);
 	this.inputElement = input;
 	
 	var _this = this;
@@ -89,7 +89,8 @@ BrainfuckMachine.prototype.step = function (){
 		}
 		this.cursor++;
 	}
-	this.renderer.last = this.memory[this.index];
+	this.renderer.memory = this.memory;
+	this.renderer.index = this.index;
 };
 BrainfuckMachine.prototype.doAll = function (){
 	this.doingAll = true;

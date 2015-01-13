@@ -16,6 +16,8 @@
 		<textarea id="code"></textarea>
 		</div>
 		<div id="inputDiv"><textarea id="userInput" ></textarea><button id="input">Input to Brainfuck</button></div>
+		<div id="memoryDiv"><table><tr id="memoryLine">
+    </tr></table></div>
 		<div id="outputDiv">
 		<span id="output"></span>
 		</div>
@@ -23,8 +25,9 @@
 			var inEl = document.getElementById("userInput");
 			inEl.disabled = true;
 			var outEl = document.getElementById("output");
-			var brainfuck = new BrainfuckMachine("++", inEl, outEl);
-			brainfuck.renderer.last = 0;
+			var memEl = document.getElementById("memoryLine");
+			var brainfuck = new BrainfuckMachine("++", inEl, outEl, memEl);
+			brainfuck.renderer.index = 0;
 		</script>
 		<script>
 			var inputFile = document.getElementById("inputFile");

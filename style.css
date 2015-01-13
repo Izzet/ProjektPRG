@@ -48,3 +48,11 @@
 	height : 85%;
 	resize : none;
 }
+#memoryDiv {
+	position : absolute;
+	left: 69%;
+	top : 22%;
+	width : 30%;
+	height : 15%;
+	background-color: #D6D6D6;
+}
