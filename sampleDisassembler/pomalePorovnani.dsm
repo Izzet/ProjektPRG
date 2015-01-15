@@ -1,0 +1,10 @@
+INIT a
+INIT b
+INIT vetsi
+MOVT a
+INPC
+MOVT b
+INPC
+MOVT a
+ITVX a {MOVT b;IFCI {DECC;MOVT vetsi;DECC;MOVT b;};MOVT vetsi;INCC;IFCI {MOVT a;CLRC;MOVT vetsi;};MOVT a;}
+ECHO vetsi

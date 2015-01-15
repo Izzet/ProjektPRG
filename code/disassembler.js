@@ -58,7 +58,7 @@ function Disassembler (){
 			_this.handleError("ECHO: Unknown variable "+args[0], args[args.length-1]);
 			return out;
 		}
-		out += _this.MOVT(args[0]);
+		out += _this.MOVT([args[0],args[args.length-1]]);
 		out += _this.ECHC();
 		return out;
 	};
@@ -317,17 +317,41 @@ function Disassembler (){
 		return out;
 	};
 	
+	this.NEGC = function (args){ // Neguje booleanovskou hodnotu současné buňky
+		var line = _this.getLineNumber(args);
+		var index = _this.vars["CURRENT"];
+		var mem = _this.vars["MEMORY"];
+		_this.RSRV([1, line]);
+		var out = _this.MOVE([mem,line]);
+		out += "+";
+		out += _this.MOVE([index, line]);
+		out += "["+_this.MOVE([mem, line])+"-"+_this.MOVE([index, line])+"[-]]";
+		out += _this.MOVE([mem, line]);
+		out += "[[-]"+_this.MOVE([index, line])+"+"+_this.MOVE([mem, line])+"]";
+		out += _this.MOVE([index, line]);
+		_this.RSRV([-1, line]);
+		return out;
+	};
+	
+	this.IFCX = function (args){ // Pokud je současná buňka větší než jedna, provede kód v bloku - argumenty jsou pouze blok
+		var line = _this.getLineNumber(args);
+		var block = args.slice(0,args.length-1).join(" ");
+		return "["+_this.compileBlock(block)+"[-]]";
+	};
+	
 	this.IFCI = function (args){
 		var line = _this.getLineNumber(args);
 		var start = _this.vars["CURRENT"];
-		var targetIndex = args[0];
-		var out = _this.MOVE([targetIndex, line]);
-		out += "["+_this.MOVE([start, line]);
-		out += _this.compileBlock(args[1]);
-		out += _this.MOVM([line])+_this.INCC([line])+_this.MOVE([targetIndex, line])+_this.CLRC()+"]";
-		out += _this.MOVM([line])+"[";
-		out += _this.DECC([line])+_this.MOVE([targetIndex, line])+_this.INCC([line])+_this.MOVM([line])+"]";
+		var mem = _this.vars["MEMORY"];
+		_this.RSRV([1,line]);
+		var out = _this.COPY([start, mem, line]);
+		out += _this.MOVE([mem, line]);
+		var arguments = [];
+		args[0] = "{MOVE "+start+";"+args[0].substring(1,args[0].length);
+		args[args.length-2] = args[args.length-2].substring(0,args[args.length-2].length-1)+"MOVE "+mem+";}";
+		out += _this.IFCX(args);
 		out += _this.MOVE([start, line]);
+		_this.RSRV([-1,line]);
 		return out;
 	};
 	
@@ -362,7 +386,7 @@ Disassembler.prototype.compileOrder = function (code, lineID){
 	if(this[line[0]])
 		output += this[line[0]](args);
 	else {
-		_this.handleError(line[0]+" is not defined", lineID);
+		this.handleError(line[0]+" is not defined", lineID);
 	}
 	return output+"\n";
 };
@@ -384,19 +408,23 @@ Disassembler.prototype.compileBlock = function (code, line){
 	var subEnd = subBegin+1;
 	var i = 0;
 	var commandEnd = 0;
+	var nmax = 100;
+	var n = 0;
 	while(i < subCode.length){
+		n++;
+		if(n > nmax) break;
 		
-		commandEnd = subCode.indexOf(";",i);console.log(i,commandEnd,subBegin);
+		commandEnd = subCode.indexOf(";",i);
 		if(i == commandEnd){
 			i++;
 			continue;
 		}
 		if(commandEnd < subBegin){
-			out += this.compileOrder(subCode.substring(i,commandEnd));
+			out += this.compileOrder(subCode.substring(i,commandEnd), line);
 			i = commandEnd+1;
 		}
 		else{
-			for(var c = subEnd; subCode.charAt(c) != "";c++){
+			for(var c = subBegin+1; subCode.charAt(c) != "";c++){
 				subEnd = c;
 				if(subCode.charAt(subEnd) == "}" && subBlocks == 0)
 					break;
@@ -405,7 +433,7 @@ Disassembler.prototype.compileBlock = function (code, line){
 				if(subCode.charAt(c) == "}")
 					subBlocks--;
 			};
-			out += this.compileOrder(subCode.substring(i, subEnd+1));
+			out += this.compileOrder(subCode.substring(i, subEnd+1), line);
 			i=subEnd+2;
 			subBegin = subCode.indexOf("{",i) == -1 ? Infinity : subCode.indexOf("{",i);
 		}
