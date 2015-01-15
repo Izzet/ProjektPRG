@@ -35,6 +35,19 @@ function Disassembler (){
 		return "-";
 	};
 	
+	this.DECM = function (){
+		var out = "";
+		if(!_this.isNumber(args[0])){
+			_this.handleError("INCM: Argument not a number", args[args.length-1]);
+			return "";
+		}
+		var n = parseInt(args[0]);
+		for(var i = 0; i < n; i++){
+			out += "-";
+		};
+		return out;
+	};
+	
 	this.ECHC = function (){
 		return ".";
 	};
@@ -42,7 +55,7 @@ function Disassembler (){
 	this.ECHO = function (args){
 		var out = "";
 		if(!_this.isVariable(args[0])){
-			_this.handleError("ECHO: Argument not a variable", args[args.length-1]);
+			_this.handleError("ECHO: Unknown variable "+args[0], args[args.length-1]);
 			return out;
 		}
 		out += _this.MOVT(args[0]);
@@ -101,13 +114,41 @@ function Disassembler (){
 		return "";
 	};
 	
-	this.DELV = function (){ // bude mazat proměnné - je třeba vyřešit přemístění proměnných v poli
-		
+	this.DELV = function (args){ // string variable name
+		var line = _this.getLineNumber(args);
+		var name = args[0];
+		if(!_this.isVariable(name)){
+			_this.handleError("DELV: Unknown variable "+name, line);
+			return "";
+		};
+		var start = _this.vars["CURRENT"];
+		var out = "";
+		out += _this.CLRV(args);
+		var posledni = name;
+		for(var i in _this.vars){
+			if(!(i == "CURRENT" || i == "MEMORY")){
+				if(_this.vars[i] > _this.vars[name]){
+					posledni = i;
+				}
+			}
+		};
+		if(posledni != name){
+			out += _this.COPX([_this.vars[posledni], _this.vars[name], line]);
+			_this.vars[posledni] = _this.vars[name];
+			delete _this.vars[name];
+			_this.RSRV([-1, line]);
+		}
+		else{
+			delete _this.vars[name];
+			_this.RSRV([-1, line]);
+		}
+		out += _this.MOVE([start, line]);
+		return out;
 	};
 	
 	this.MOVT = function (args){ // string variable name
 		if(!_this.isVariable(args[0])){
-			_this.handleError("MOVT: Unknown variable", args[args.length-1]);
+			_this.handleError("MOVT: Unknown variable "+args[0], args[args.length-1]);
 			return "";
 		}
 		var out = _this.MOVE([_this.vars[args[0]], args[args.length-1]]);
@@ -120,7 +161,7 @@ function Disassembler (){
 	
 	this.CLRV = function (args){ // string variable name
 		if(!_this.isVariable(args[0])){
-			_this.handleError("CLRV: Unknown variable", args[args.length-1]);
+			_this.handleError("CLRV: Unknown variable "+args[0], args[args.length-1]);
 			return "";
 		}
 		var out = _this.MOVT(args)+_this.CLRC();
@@ -158,7 +199,7 @@ function Disassembler (){
 				return "";
 			}
 		};
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		_this.RSRV([1, line]);
 		var out = _this.ADDX([args[0], _this.vars["MEMORY"]-1, line]);
 		var arguments = [];
@@ -176,7 +217,7 @@ function Disassembler (){
 		var arguments = [];
 		for(var i = 0; i < args.length-1; i++){
 			if(!_this.isVariable(args[i])){console.log(args);
-				_this.handleError("ADDV: "+(i+1)+_this.getSuffix(i)+" variable is unknown",args[args.length-1]);
+				_this.handleError("ADDV: "+(i+1)+_this.getSuffix(i)+" variable ("+args[i]+") is unknown",args[args.length-1]);
 				return "";
 			}
 			arguments[i] = _this.vars[args[i]];
@@ -187,7 +228,7 @@ function Disassembler (){
 	
 	this.SETV = function (args){ // string variable name, int value
 		if(!_this.isVariable(args[0])){
-			_this.handleError("SETV: Unknown variable", args[args.length-1]);
+			_this.handleError("SETV: Unknown variable "+args[0], args[args.length-1]);
 			return "";
 		}
 		if(!_this.isNumber(args[1])){
@@ -202,7 +243,7 @@ function Disassembler (){
 	};
 	
 	this.COPX = function (args){ // int source index, int first destination index, int second destination index, ... - maže obsah source, pointer končí v source
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var out = "";
 		for(var i = 1; i < args.length-1; i++){
 			out += _this.MOVE([args[i], line]);
@@ -213,7 +254,7 @@ function Disassembler (){
 	};
 	
 	this.COPY = function (args){ // int source index, int first destination index, int second destination index, ...
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var out = _this.ADDX([args[0], _this.vars["MEMORY"], line]);
 		var arguments = [];
 		arguments[0] = _this.vars["MEMORY"];
@@ -235,7 +276,7 @@ function Disassembler (){
 	};
 	
 	this.ITRI = function (args){ // int index, funkce
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var block = args.slice(1,args.length-1).join(" ");
 		
 		var position = _this.vars["CURRENT"]; // uložení pozice
@@ -248,7 +289,7 @@ function Disassembler (){
 	};
 	
 	this.ITER = function (args){ // int numberOfTimes, block funkce, oddělené středníkem bez mezer
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var block = args.slice(1,args.length-1).join(" ");
 		
 		var position = _this.vars["CURRENT"];
@@ -264,7 +305,7 @@ function Disassembler (){
 	};
 	
 	this.ITVX = function (args){
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var out = "";
 		var index = _this.vars[args[0]];
 		var arguments = [];
@@ -277,7 +318,7 @@ function Disassembler (){
 	};
 	
 	this.IFCI = function (args){
-		var line = args[args.length-1];
+		var line = _this.getLineNumber(args);
 		var start = _this.vars["CURRENT"];
 		var targetIndex = args[0];
 		var out = _this.MOVE([targetIndex, line]);
@@ -456,4 +497,8 @@ Disassembler.prototype.getSuffix = function (num){
 	else{
 		return this.suffixes[3];
 	}
+};
+
+Disassembler.prototype.getLineNumber = function (args){
+	return args[args.length - 1];
 };

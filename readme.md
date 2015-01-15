@@ -20,3 +20,6 @@ jinému, kdyby se snažil pochopit, co jsem to tvořil.
 12.11.2014 Práce na dokumentaci a debugging - procházení současných funkcionalit
 programu a jejich oprava - ještě není hotovo, ale základní funkce už jsou popsané
 v doc.html
+15.1.2015 Debug některých errorů, zprovoznění rendrování paměti, doplnění databáze
+a funkce DELV - mazání proměnných a s tím spojená defragmentace
+<br>
