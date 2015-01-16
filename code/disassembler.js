@@ -356,6 +356,45 @@ function Disassembler (){
 		return out;
 	};
 	
+	this.GRTV = function (args){
+		var line = _this.getLineNumber(args);
+		var start = _this.vars["CURRENT"];
+		for(var i = 0; i < 3; i++){
+			if(!_this.isVariable(args[i])){
+				_this.handleError("GRTV: Unknown variable "+args[i], line);
+				return "";
+			}
+		};
+		var mem = _this.vars["MEMORY"];
+		_this.RSRV([8,line]);
+		var out = _this.COPY([_this.vars[args[0]], mem+1, line]);
+		out += _this.COPY([_this.vars[args[1]], mem+3, line]);
+		out += _this.MOVE([mem+5,line])+"+"+_this.MOVE([mem+6,line])+"+";
+		out += _this.MOVE([mem+3,line])+"[-"+_this.MOVE([mem+2, line])+"]"+_this.MOVE([mem+1, line]);
+		out += "[[-<]>>>[-<]<]>>>>[>]";
+		_this.vars["CURRENT"] = mem+7;
+		out += _this.MOVE([mem+1, line]);
+		out += "[[-]"+_this.MOVE([mem+7,line])+"-"+_this.MOVE([mem+1, line])+"]";
+		out += _this.MOVE([mem+7, line])+"+";
+		out += "[-"+_this.MOVT([args[2], line])+_this.CLRC([line])+"-"+_this.MOVE([mem+7, line])+"]";
+		out += _this.MOVT([args[2], line])+"+";
+		out += _this.MOVE([mem+3, line])+_this.CLRC([line]);
+		out += _this.MOVE([mem+5, line])+"-"+_this.MOVE([mem+6, line])+"-";
+		out += _this.MOVE([start, line]);
+		return out;
+	};
+	
+	this.SMLV = function  (args){
+		var line = _this.getLineNumber(args);
+		for(var i = 0; i < 3; i++){
+			if(!_this.isVariable(args[i])){
+				_this.handleError("SMLV: Unknown variable "+args[i], line);
+				return "";
+			}
+		};
+		return _this.GRTV([args[1], args[0], args[2], line]);
+	};
+	
 };
 Disassembler.prototype.compile = function (code, outputElement){
 	

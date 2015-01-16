@@ -23,3 +23,5 @@ v doc.html
 15.1.2015 Debug některých errorů, zprovoznění rendrování paměti, doplnění databáze
 a funkce DELV - mazání proměnných a s tím spojená defragmentace
 <br>
+16.1.2015 Přidáno porovnání dvou proměnných - která je větší a která menší
+<br>
