@@ -227,15 +227,16 @@ function Disassembler (){
 	};
 	
 	this.SETV = function (args){ // string variable name, int value
+		var line = _this.getLineNumber(args);
 		if(!_this.isVariable(args[0])){
-			_this.handleError("SETV: Unknown variable "+args[0], args[args.length-1]);
+			_this.handleError("SETV: Unknown variable "+args[0], line);
 			return "";
 		}
 		if(!_this.isNumber(args[1])){
-			_this.handleError("SETV: Second argument not a number", args[args.length-1]);
+			_this.handleError("SETV: Second argument not a number", line);
 			return "";
-		}
-		var out = _this.CLRV(args[0]);
+		}console.log(args);
+		var out = _this.CLRV([args[0], line]);
 		for(var i = 0; i < parseInt(args[1]); i++){
 			out+="+";
 		};
