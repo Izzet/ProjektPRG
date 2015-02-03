@@ -1,138 +1,23 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-
-<HTML>
-<HEAD>
-	
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1250">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="LibreOffice 4.1.1.2 (Windows)">
-	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGED" CONTENT="0;0">
-	
-	<STYLE>
-		<!-- 
-		BODY,DIV,TABLE,THEAD,TBODY,TFOOT,TR,TH,TD,P { font-family:"Arial"; font-size:x-small }
-		 -->
-	</STYLE>
-	
-</HEAD>
-
-<BODY TEXT="#000000">
-<TABLE CELLSPACING="0" COLS="4" BORDER="0">
-	<COLGROUP WIDTH="49"></COLGROUP>
-	<COLGROUP WIDTH="69"></COLGROUP>
-	<COLGROUP WIDTH="1049"></COLGROUP>
-	<COLGROUP WIDTH="315"></COLGROUP>
-	<TR>
-		<TD HEIGHT="18" ALIGN="LEFT">HARD</TD>
-		<TD ALIGN="LEFT">CODE</TD>
-		<TD ALIGN="LEFT">Přepíše CODE přímo do brainfucku</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">INCC</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Zvýší hodnotu současné buňky o 1 &ndash; brainfuckové +</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">INCM</TD>
-		<TD ALIGN="LEFT">N</TD>
-		<TD ALIGN="LEFT">Zvýší hodnotu současné buňky o N</TD>
-		<TD ALIGN="LEFT">Argument not a number</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">DECC</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Sníží hodnotu současné buňky o 1 &ndash; brainfuckové -</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">ECHC</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Vrátí hodnotu současné buňky &ndash; brainfuckové .</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">ECHO</TD>
-		<TD ALIGN="LEFT">VAR</TD>
-		<TD ALIGN="LEFT">Vrátí hodnotu proměnné VAR</TD>
-		<TD ALIGN="LEFT">Unknown variable</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">INPC</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Vyžádá si uživatelský vstup, který uloží do současné buňky</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">RSRV</TD>
-		<TD ALIGN="LEFT">N</TD>
-		<TD ALIGN="LEFT">Zarezervuje N buňek &ndash; operační paměť brainfucku se posune o N buněk dál</TD>
-		<TD ALIGN="LEFT">Argument not a number</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">MOVE</TD>
-		<TD ALIGN="LEFT">INDEX</TD>
-		<TD ALIGN="LEFT">Přemístí se k buňce s indexem INDEX</TD>
-		<TD ALIGN="LEFT">Argument not a number</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">MOVM</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Přemístí se k první buňce v operační paměti</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">INIT</TD>
-		<TD ALIGN="LEFT">VAR</TD>
-		<TD ALIGN="LEFT">Vytvoří novou proměnnou se jménem VAR a zarezervuje jí místo</TD>
-		<TD ALIGN="LEFT">Invalid variable name</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">MOVT</TD>
-		<TD ALIGN="LEFT">VAR</TD>
-		<TD ALIGN="LEFT">Přemístí se k buňce, která obsahuje obsah proměnné VAR</TD>
-		<TD ALIGN="LEFT">Unknown variable</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">CLRC</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-		<TD ALIGN="LEFT">Vyčístí současnou buňku &ndash; nastaví ji na 0</TD>
-		<TD ALIGN="LEFT"><BR></TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">CLRV</TD>
-		<TD ALIGN="LEFT">VAR</TD>
-		<TD ALIGN="LEFT">Vyčistí buňku, která má obsah proměnné VAR</TD>
-		<TD ALIGN="LEFT">Unknown variable</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">ADDX</TD>
-		<TD ALIGN="LEFT">i1 i2 i3 &hellip;</TD>
-		<TD ALIGN="LEFT">Vezme obsah buňky na indexu i1 a přičte ho k buňkám na indexech i2, i3, &hellip;, přičemž smaže obsah na i1</TD>
-		<TD ALIGN="LEFT">Nth argument not a number</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">ADDS</TD>
-		<TD ALIGN="LEFT">i1 i2 i3 &hellip;</TD>
-		<TD ALIGN="LEFT">Vezme obsah buňky na indexu i1, převede ho do paměti a poté provede ADDX na buňky na indexech i1, i2, i3 &hellip; - tedy přičte obsah i1 k i2, i3, &hellip; a přitom zachová obsah i1</TD>
-		<TD ALIGN="LEFT">Nth argument not a number</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">ADDV</TD>
-		<TD ALIGN="LEFT">v1 v2 v3 &hellip;</TD>
-		<TD ALIGN="LEFT">Provádí ADDS, ale podle jmen proměnných</TD>
-		<TD ALIGN="LEFT">Nth variable is unknown</TD>
-	</TR>
-	<TR>
-		<TD HEIGHT="17" ALIGN="LEFT">SETV</TD>
-		<TD ALIGN="LEFT">var n</TD>
-		<TD ALIGN="LEFT">Nastaví hodnotu proměnné var na n</TD>
-		<TD ALIGN="LEFT">Unknown variable, Second argument not a number</TD>
-	</TR>
-</TABLE>
-<!-- ************************************************************************** -->
-</BODY>
-
-</HTML>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><!--This file was converted to xhtml by LibreOffice - see http://cgit.freedesktop.org/libreoffice/core/tree/filter/source/xslt for the code.--><head profile="http://dublincore.org/documents/dcmi-terms/"><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/><title xml:lang="en-US">- no title specified</title><meta name="DCTERMS.title" content="" xml:lang="en-US"/><meta name="DCTERMS.language" content="en-US" scheme="DCTERMS.RFC4646"/><meta name="DCTERMS.source" content="http://xml.openoffice.org/odf2xhtml"/><meta name="DCTERMS.provenance" content="" xml:lang="en-US"/><meta name="DCTERMS.subject" content="," xml:lang="en-US"/><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" hreflang="en"/><link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" hreflang="en"/><link rel="schema.DCTYPE" href="http://purl.org/dc/dcmitype/" hreflang="en"/><link rel="schema.DCAM" href="http://purl.org/dc/dcam/" hreflang="en"/><style type="text/css">
+	@page {  }
+	table { border-collapse:collapse; border-spacing:0; empty-cells:show }
+	td, th { vertical-align:top; font-size:10pt;}
+	h1, h2, h3, h4, h5, h6 { clear:both }
+	ol, ul { margin:0; padding:0;}
+	li { list-style: none; margin:0; padding:0;}
+	<!-- "li span.odfLiEnd" - IE 7 issue-->
+	li span. { clear: both; line-height:0; width:0; height:0; margin:0; padding:0; }
+	span.footnodeNumber { padding-right:1em; }
+	span.annotation_style_by_filter { font-size:95%; font-family:Arial; background-color:#fff000;  margin:0; border:0; padding:0;  }
+	* { margin:0;}
+	.ta1 { writing-mode:lr-tb; }
+	.Default { font-family:Liberation Sans; }
+	.co1 { width:1.288cm; }
+	.co2 { width:1.804cm; }
+	.co3 { width:27.513cm; }
+	.co4 { width:8.26cm; }
+	.ro1 { height:0.452cm; }
+	<!-- ODF styles with no properties representable as CSS -->
+	 { }
+	</style></head><body dir="ltr" style="writing-mode:lr-tb; "><table border="0" cellspacing="0" cellpadding="0" class="ta1"><colgroup><col width="56"/><col width="79"/><col width="1202"/><col width="361"/></colgroup><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>HARD</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>CODE</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>PĹ™epĂ­Ĺˇe CODE pĹ™Ă­mo do brainfucku</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>INCC</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>ZvĂ˝ĹˇĂ­ hodnotu souÄŤasnĂ© buĹky o 1 â€“ brainfuckovĂ© +</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>INCM</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>N</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>ZvĂ˝ĹˇĂ­ hodnotu souÄŤasnĂ© buĹky o N</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>DECC</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>SnĂ­ĹľĂ­ hodnotu souÄŤasnĂ© buĹky o 1 â€“ brainfuckovĂ© -</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>DECM</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>N</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>SnĂ­ĹľĂ­ hodnotu souÄŤasnĂ© buĹky o N</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>ECHC</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>VrĂˇtĂ­ hodnotu souÄŤasnĂ© buĹky â€“ brainfuckovĂ© .</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>ECHO</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>VAR</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>VrĂˇtĂ­ hodnotu promÄ›nnĂ© VAR</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Unknown variable</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>INPC</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>VyĹľĂˇdĂˇ si uĹľivatelskĂ˝ vstup, kterĂ˝ uloĹľĂ­ do souÄŤasnĂ© buĹky</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>RSRV</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>N</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>Zarezervuje N buĹek â€“ operaÄŤnĂ­ pamÄ›ĹĄ brainfucku se posune o N bunÄ›k dĂˇl</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>MOVE</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>INDEX</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>PĹ™emĂ­stĂ­ se k buĹce s indexem INDEX</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>MOVM</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>PĹ™emĂ­stĂ­ se k prvnĂ­ buĹce v operaÄŤnĂ­ pamÄ›ti</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>INIT</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>VAR</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>VytvoĹ™Ă­ novou promÄ›nnou se jmĂ©nem VAR a zarezervuje jĂ­ mĂ­sto</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Invalid variable name</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>MOVT</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>VAR</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>PĹ™emĂ­stĂ­ se k buĹce, kterĂˇ obsahuje obsah promÄ›nnĂ© VAR</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Unknown variable</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>CLRC</p></td><td style="text-align:left;width:1.804cm; " class="Default">Â </td><td style="text-align:left;width:27.513cm; " class="Default"><p>VyÄŤĂ­stĂ­ souÄŤasnou buĹku â€“ nastavĂ­ ji na 0</p></td><td style="text-align:left;width:8.26cm; " class="Default">Â </td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>CLRV</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>VAR</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>VyÄŤistĂ­ buĹku, kterĂˇ mĂˇ obsah promÄ›nnĂ© VAR</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Unknown variable</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>ADDX</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>i1 i2 i3 â€¦</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>Vezme obsah buĹky na indexu i1 a pĹ™iÄŤte ho k buĹkĂˇm na indexech i2, i3, â€¦, pĹ™iÄŤemĹľ smaĹľe obsah na i1</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Nth argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>ADDS</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>i1 i2 i3 â€¦</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>Vezme obsah buĹky na indexu i1, pĹ™evede ho do pamÄ›ti a potĂ© provede ADDX na buĹky na indexech i1, i2, i3 â€¦ - tedy pĹ™iÄŤte obsah i1 k i2, i3, â€¦ a pĹ™itom zachovĂˇ obsah i1</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Nth argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>ADDV</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>v1 v2 v3 â€¦</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>ProvĂˇdĂ­ ADDS, ale podle jmen promÄ›nnĂ˝ch</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Nth variable is unknown</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>SETV</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>var n</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>NastavĂ­ hodnotu promÄ›nnĂ© var na n</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Unknown variable, Second argument not a number</p></td></tr><tr class="ro1"><td style="text-align:left;width:1.288cm; " class="Default"><p>DELV</p></td><td style="text-align:left;width:1.804cm; " class="Default"><p>var n</p></td><td style="text-align:left;width:27.513cm; " class="Default"><p>SmaĹľe promÄ›nnou n â€“ odebere ji ze seznamu promÄ›nnĂ˝ch a pĹ™esune ostatnĂ­ tak, aby byla pamÄ›ĹĄ promÄ›nnĂ˝ch nefragmentovanĂˇ</p></td><td style="text-align:left;width:8.26cm; " class="Default"><p>Unknown variable</p></td></tr></table></body></html>
