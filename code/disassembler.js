@@ -1,8 +1,13 @@
 function Disassembler (){
 	
-	this.vars = [];
-	this.vars["MEMORY"] = 0;
-	this.vars["CURRENT"] = 0;
+	this.vars = []; // index,length,type
+	this.vars["MEMORY"] = [0,1,"environment"];
+	this.vars["CURRENT"] = [0,1,"environment"];
+	this.lastVar = false;
+	
+	this.varSpaces = [];
+	
+	this.varTypes = {"CELL" : {"size" : 1,},};
 	
 	this.errorLogSpan = false;
 	this.errored = false;
@@ -69,7 +74,7 @@ function Disassembler (){
 	
 	this.RSRV = function (args){
 		if(_this.isNumber(args[0]))
-			_this.vars["MEMORY"]+=parseInt(args[0]);
+			_this.vars["MEMORY"][0]+=parseInt(args[0]);
 		else
 			_this.handleError("RSRV: Argument not a number", args[args.length-1]);
 		return "";
@@ -82,35 +87,61 @@ function Disassembler (){
 		}
 		var x = parseInt(args[0]);
 		var out = "";
-		var pointer = _this.vars["CURRENT"];
+		var pointer = _this.vars["CURRENT"][0];
 		
 		if(x-pointer > 0){
 			for(var i = 0; i < x-pointer; i++){
 				out += ">";
-				_this.vars["CURRENT"]++;
+				_this.vars["CURRENT"][0]++;
 			};
 		}
 		else {
 			for(var i = 0; i < pointer-x; i++){
 				out += "<";
-				_this.vars["CURRENT"]--;
+				_this.vars["CURRENT"][0]--;
 			};
 		}
 		return out;
 	};
 	
 	this.MOVM = function (args){ // přesun do ramky - memory
-		var out = _this.MOVE([_this.vars["MEMORY"], args[0]]);
+		var out = _this.MOVE([_this.vars["MEMORY"][0], args[0]]);
 		return out;
 	};
 	
 	this.INIT = function (args){ // string variable name
-		if(_this.isNumber(args[0]) || _this.isVariable(args[0])){
+		if(_this.isNumber(args[1]) || _this.isVariable(args[1])){
 			_this.handleError("INIT: Invalid variable name", args[args.length-1]);
 			return "";
 		}
-		_this.vars[args[0]] = _this.vars["MEMORY"];
-		_this.RSRV([1,args[args.length-1]]);
+		if(!_this.isVariableType(args[0])){
+			_this.handleError("INIT: Unknown variable type "+args[0],args[args.length-1]);
+			return "";
+		}
+		var spaceIndex = -1;
+		var spaceLength = 0;
+		var spaceID = -1;
+		for(var i = 0; i < _this.varSpaces.length; i++){
+			if(_this.varTypes[args[0]].size <= _this.varSpaces[i][1]){
+				spaceIndex = _this.varSpaces[i][0];
+				spaceLength = _this.varSpaces[i][1];
+				spaceID = i;
+			}
+		};
+		if(spaceIndex == -1){
+			_this.vars[args[1]] = [_this.vars["MEMORY"][0],_this.varTypes[args[0]].size,args[0]];
+			_this.RSRV([1,args[args.length-1]]);
+			_this.lastVar = args[1];
+		}
+		else {
+			_this.vars[args[1]] = [spaceIndex,_this.varTypes[args[0]].size,args[0]];
+			if(spaceLength == _this.varTypes[args[0]].size){
+				_this.varSpaces.splice(spaceID, 1);
+			}
+			else {
+				_this.varSpaces[spaceID][1] -= _this.varTypes[args[0]].size;
+			}
+		}
 		return "";
 	};
 	
@@ -121,28 +152,15 @@ function Disassembler (){
 			_this.handleError("DELV: Unknown variable "+name, line);
 			return "";
 		};
-		var start = _this.vars["CURRENT"];
-		var out = "";
-		out += _this.CLRV(args);
-		var posledni = name;
-		for(var i in _this.vars){
-			if(!(i == "CURRENT" || i == "MEMORY")){
-				if(_this.vars[i] > _this.vars[name]){
-					posledni = i;
-				}
-			}
-		};
-		if(posledni != name){
-			out += _this.COPX([_this.vars[posledni], _this.vars[name], line]);
-			_this.vars[posledni] = _this.vars[name];
-			delete _this.vars[name];
-			_this.RSRV([-1, line]);
+		var start = _this.vars["CURRENT"][0];
+		var out = _this.CLRV([name, line]);
+		if(_this.lastVar != name){
+			_this.vars["MEMORY"][0] -= _this.vars[name][1];
 		}
 		else{
-			delete _this.vars[name];
-			_this.RSRV([-1, line]);
+			_this.varSpaces.push([_this.vars[name][0],_this.vars[name][1]]);
 		}
-		out += _this.MOVE([start, line]);
+		delete _this.vars[name];
 		return out;
 	};
 	
@@ -151,7 +169,7 @@ function Disassembler (){
 			_this.handleError("MOVT: Unknown variable "+args[0], args[args.length-1]);
 			return "";
 		}
-		var out = _this.MOVE([_this.vars[args[0]], args[args.length-1]]);
+		var out = _this.MOVE([_this.vars[args[0]][0], args[args.length-1]]);
 		return out;
 	};
 	
@@ -164,7 +182,14 @@ function Disassembler (){
 			_this.handleError("CLRV: Unknown variable "+args[0], args[args.length-1]);
 			return "";
 		}
-		var out = _this.MOVT(args)+_this.CLRC();
+		var start = _this.vars["CURRENT"][0];
+		var name = args[0];
+		var out = _this.MOVT(args);
+		for(var i = _this.vars["CURRENT"][0]; i - _this.vars[name][0] < _this.vars[name][1]; i++){
+			out += _this.MOVE([i, line]);
+			out += _this.CLRC();
+		};
+		out += _this.MOVE([start, line]);
 		return out;
 	};
 	
@@ -399,8 +424,8 @@ function Disassembler (){
 Disassembler.prototype.compile = function (code, outputElement){
 	
 	this.vars = [];
-	this.vars["MEMORY"] = 0;
-	this.vars["CURRENT"] = 0;
+	this.vars["MEMORY"] = [0,1,"environment"];
+	this.vars["CURRENT"] = [0,1,"environment"];
 	
 	this.errorLogSpan.innerHTML = "";
 	
@@ -524,10 +549,10 @@ Disassembler.prototype.compileBlock = function (code, line){
 Disassembler.prototype.importEnvironmentVariables = function (args){
 	for(var i = 0; i < args.length; i++){
 		if(args[i] == "MEMORY"){
-			args[i] = this.vars["MEMORY"];
+			args[i] = this.vars["MEMORY"][0];
 		}
 		else if(args[i] == "CURRENT"){
-			args[i] = this.vars["CURRENT"];
+			args[i] = this.vars["CURRENT"][0];
 		}
 	};
 };
@@ -554,6 +579,15 @@ Disassembler.prototype.isVariable = function (arg){
 		return false;
 	}
 	else{
+		return true;
+	}
+};
+
+Disassembler.prototype.isVariableType = function (arg){
+	if(this.varTypes[arg] == undefined){
+		return false;
+	}
+	else {
 		return true;
 	}
 };
